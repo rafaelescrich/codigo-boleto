@@ -1,0 +1,86 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Verifica Boleto</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
+
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- <link href="css/bootstrap.css"> -->
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+        <script src="js/codigo-boleto.js"></script>
+        <!--<link rel="stylesheet" href="css/main.css"> -->
+    </head>
+    <body>
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <!-- Add your site or application content here -->
+        <div class="container">
+            <h1>Página para verificar se o número do boleto é válido</h1>
+
+            <form class="form-horizontal">
+                <fieldset>
+                    <legend>Verifica número boleto</legend>
+                    <div class="form-group">
+                        <div class="row">
+                            <label for="inputBoleto" class="col-lg-2 control-label">Número Boleto</label>
+                              <div class="col-lg-10">
+                                <input type="text" class="form-control" id="inputBoleto" minlength="47" maxlength="47">
+                              </div>
+                        </div>
+
+                        <div class="row text-right">
+                            <p><a class="btn btn-primary btn-lg" href="#" onclick="verificaBoleto(document.getElementById('inputBoleto').value)" role="button">Verificar</a></p>
+                        </div>
+
+                        <div class="row">
+                            <label for="inputBoleto" class="col-lg-2 control-label">Número Boleto verificado: </label>
+                              <div class="col-lg-10">
+                                <p id="inputBoletoVerificado"></p>
+                              </div>
+                        </div>
+                        <div class="row">
+                            <label for="inputBoleto" class="col-lg-2 control-label">Banco: </label>
+                              <div class="col-lg-10">
+                                <p id="nome_banco"></p>
+                              </div>
+                        </div>
+                        <div class="row">
+                            <label for="inputBoleto" class="col-lg-2 control-label">Moeda: </label>
+                              <div class="col-lg-10">
+                                <p id="nome_moeda"></p>
+                              </div>
+                        </div>
+                        <div class="row">
+                            <label for="inputBoleto" class="col-lg-2 control-label">Vencimento: </label>
+                              <div class="col-lg-10">
+                                <p id="data_vencimento"></p>
+                              </div>
+                        </div>
+                        <div class="row">
+                            <label for="inputBoleto" class="col-lg-2 control-label">Valor: </label>
+                              <div class="col-lg-10">
+                                <p id="valor_boleto"></p>
+                              </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </body>
+</html>
