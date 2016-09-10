@@ -4,6 +4,11 @@ function verificaBoleto() {
 
   var linha_digitavel = document.getElementById('inputBoleto').value;
 
+  if(linha_digitavel.length !== 47)  {
+    alert("Número do boleto menor que 47 dígitos");
+    return;
+  }
+
   // Posição 01-03 = identificação do banco (001 = Banco do Brasil)
   var banco = parseInt(linha_digitavel.substr(0, 3));
   var nome_banco;
@@ -27,37 +32,45 @@ function verificaBoleto() {
 
 
   // Posição 05-09 = 5 primeiras posições do campo livre
-  var primeiro_campo_livre = linha_digitavel.substr(4, 8);  
+  var primeiro_campo_livre = linha_digitavel.slice(4, 9);  
 
   // Posição 10-10 = dígito verificador do primeiro campo
-  var dv_1_campo_livre = linha_digitavel.substr(9, 9);  
+  var dv_1_campo_livre = linha_digitavel.slice(9, 10);  
 
   // Posição 11-20 = 6ª a 15ª posições do campo livre
-  var segundo_campo_livre = linha_digitavel.substr(10, 19);
+  var segundo_campo_livre = linha_digitavel.slice(10, 20);
 
   // Posição 21-21 = dígito verificador do segundo campo
-  var dv_2_campo_livre = linha_digitavel.substr(20, 20);
+  var dv_2_campo_livre = linha_digitavel.slice(20, 21);
 
   // Posição 22-31 = 16ª a 25ª posições do campo livre
-  var terceiro_campo_livre = linha_digitavel.substr(21, 30);  
+  var terceiro_campo_livre = linha_digitavel.slice(21, 31);  
 
   // Posição 32-32 = dígito verificador do terceiro campo
-  var dv_3_campo_livre = linha_digitavel.substr(31, 31);
+  var dv_3_campo_livre = linha_digitavel.slice(31, 32);
 
   // Posição 33-33 = dígito verificador geral
-  var dv_geral = linha_digitavel.substr(32, 32);
+  var dv_geral = linha_digitavel.slice(32, 33);
 
   // Posição 34-37 = fator de vencimento (3737 = 31/12/2007)
-  var fator_vencimento = linha_digitavel.substr(33, 36);
+  var fator_vencimento = linha_digitavel.slice(33, 37);
   var data_base = new Date('10/07/1997');
-  var vencimento = data_base.getTime() + (fator_vencimento * 24 * 60 * 60 * 1000);
-  var data_vencimento = ("0" + (vencimento.getDate())).slice(-2) + '/' 
-                      + ("0" + (vencimento.getMonth() + 1)).slice(-2) 
-                      + '/' + vencimento.getFullYear();
+  console.log(data_base);
+  data_base = data_base.getTime();
+  console.log(data_base);
+
+  var vencimento = new Date();
+  var vencimento = data_base + (fator_vencimento * 24 * 60 * 60 * 1000);
+  
+  var data_vencimento = vencimento.getDate();
+  var mes_vencimento = vencimento.getMonth();
+  var ano_vencimento = vencimento.getFullYear();
+
+  var data_vencimento = ("0" + (vencimento.getDate())).slice(-2) + '/' + ("0" + (vencimento.getMonth() + 1)).slice(-2) + '/' + vencimento.getFullYear();
   document.getElementById('data_vencimento').innerHTML = data_vencimento;
 
   // Posição 38-47 = valor do boleto (100 = R$1,00)
-  var valor = linha_digitavel.substr(37, 46);
+  var valor = linha_digitavel.substr(37, 47);
   var centavos = valor.substr(valor.length, valor.length - 1);
   var inteiros = valor.substr(valor.length - 2, valor.length - 10);
   var valor_boleto = "R$ " + inteiros + "," + centavos;

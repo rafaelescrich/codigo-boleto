@@ -38,14 +38,14 @@
                     <legend>Verifica número boleto</legend>
                     <div class="form-group">
                         <div class="row">
-                            <label for="inputBoleto" class="col-lg-2 control-label">Número Boleto</label>
-                              <div class="col-lg-10">
-                                <input type="text" class="form-control" id="inputBoleto" minlength="47" maxlength="47">
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" id="inputBoleto" minlength="47" maxlength="47" placeholder="Número Boleto">
+                            </div>
+                            <div class="col-lg-2">
+                                <a class="btn btn-primary" href="#" onclick="verificaBoleto(document.getElementById('inputBoleto').value)" role="button">Verificar</a>
+                            </div>
+                                
                               </div>
-                        </div>
-
-                        <div class="row text-right">
-                            <p><a class="btn btn-primary btn-lg" href="#" onclick="verificaBoleto(document.getElementById('inputBoleto').value)" role="button">Verificar</a></p>
                         </div>
 
                         <div class="row">
