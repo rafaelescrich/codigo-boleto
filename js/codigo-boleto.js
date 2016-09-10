@@ -51,13 +51,10 @@ function verificaBoleto() {
 
   // Posição 38-47 = valor do boleto (100 = R$1,00)
   var valor = linha_digitavel.substr(37, 47);
-  var centavos = parseInt(valor.substr(valor.length - 2, valor.length));
-  var inteiros = parseInt(valor.substr(valor.length - 10, valor.length - 2));
-  var valor_boleto = "R$ " + inteiros + "," + centavos;
+  var valor_boleto = identifica_valor(valor);
+  
   document.getElementById('valor_boleto').innerHTML = valor_boleto;
 
-
-  // document.getElementById('inputBoletoVerificado').innerHTML = calcula_linha(numBoleto);
 
 }
 
@@ -90,6 +87,13 @@ function identifica_data_vencimento(fator_vencimento) {
   var mes_vencimento = vencimento.getMonth();
   var ano_vencimento = vencimento.getFullYear();
   return ("0" + (vencimento.getDate())).slice(-2) + '/' + ("0" + (vencimento.getMonth() + 1)).slice(-2) + '/' + vencimento.getFullYear();
+}
+
+function identifica_valor(valor) {
+
+  var centavos = parseInt(valor.substr(valor.length - 2, valor.length));
+  var inteiros = parseInt(valor.substr(valor.length - 10, valor.length - 2));
+  return "R$ " + inteiros + "," + centavos;
 }
 
 function calcula_linha(barra) {
