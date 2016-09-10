@@ -10,24 +10,15 @@ function verificaBoleto() {
   }
 
   // Posição 01-03 = identificação do banco (001 = Banco do Brasil)
-  var banco = parseInt(linha_digitavel.substr(0, 3));
-  var nome_banco;
-  for (var i = 0; i < bancos.length; i++){
-    var obj = bancos[i];
-    if(obj.codigo === banco)
-        nome_banco = obj.nome_do_banco;
-  }
-  if(nome_banco === "undefined")
-    alert("Banco não existe");
+  var codigo_banco = linha_digitavel.substr(0, 3);
+  var nome_banco = identifica_banco(codigo_banco, json_bancos);
+  
   document.getElementById('nome_banco').innerHTML = nome_banco;
 
   // Posição 04-04 = código da moeda (9 = Real)
-  var moeda = linha_digitavel.charAt(3);
-  var nome_moeda;
-  if(moeda !== '9')
-    alert('Boleto em outra moeda');
-  else
-    nome_moeda = "Real";
+  var num_moeda = linha_digitavel.charAt(3);
+  var nome_moeda = identifica_moeda(num_moeda);
+
   document.getElementById('nome_moeda').innerHTML = nome_moeda;
 
 
@@ -54,31 +45,51 @@ function verificaBoleto() {
 
   // Posição 34-37 = fator de vencimento (3737 = 31/12/2007)
   var fator_vencimento = linha_digitavel.slice(33, 37);
-  var data_base = new Date('10/07/1997');
-  console.log(data_base);
-  data_base = data_base.getTime();
-  console.log(data_base);
-
-  var vencimento = new Date();
-  var vencimento = data_base + (fator_vencimento * 24 * 60 * 60 * 1000);
+  var data_vencimento = identifica_data_vencimento(fator_vencimento);
   
-  var data_vencimento = vencimento.getDate();
-  var mes_vencimento = vencimento.getMonth();
-  var ano_vencimento = vencimento.getFullYear();
-
-  var data_vencimento = ("0" + (vencimento.getDate())).slice(-2) + '/' + ("0" + (vencimento.getMonth() + 1)).slice(-2) + '/' + vencimento.getFullYear();
   document.getElementById('data_vencimento').innerHTML = data_vencimento;
 
   // Posição 38-47 = valor do boleto (100 = R$1,00)
   var valor = linha_digitavel.substr(37, 47);
-  var centavos = valor.substr(valor.length, valor.length - 1);
-  var inteiros = valor.substr(valor.length - 2, valor.length - 10);
+  var centavos = parseInt(valor.substr(valor.length - 2, valor.length));
+  var inteiros = parseInt(valor.substr(valor.length - 10, valor.length - 2));
   var valor_boleto = "R$ " + inteiros + "," + centavos;
   document.getElementById('valor_boleto').innerHTML = valor_boleto;
 
 
   // document.getElementById('inputBoletoVerificado').innerHTML = calcula_linha(numBoleto);
 
+}
+
+function identifica_banco(codigo_banco, json_bancos) {
+  var nome_banco;
+  for (var i = 0; i < json_bancos.length; i++){
+    var obj = json_bancos[i];
+    if(obj.codigo === codigo_banco)
+        nome_banco = obj.nome_banco;
+  }
+  if(nome_banco === "undefined")
+    return "Banco não existe";
+  return nome_banco;
+}
+
+function identifica_moeda(num_moeda) {
+  if(num_moeda !== '9')
+    return "Boleto em outra moeda";
+  else
+    return "Real";
+}
+
+function identifica_data_vencimento(fator_vencimento) {
+
+  var data_base = new Date('10/07/1997');
+  data_base = data_base.getTime();
+  var vencimento = new Date();
+  vencimento.setTime(data_base + (fator_vencimento * 24 * 60 * 60 * 1000));
+  var data_vencimento = vencimento.getDate();
+  var mes_vencimento = vencimento.getMonth();
+  var ano_vencimento = vencimento.getFullYear();
+  return ("0" + (vencimento.getDate())).slice(-2) + '/' + ("0" + (vencimento.getMonth() + 1)).slice(-2) + '/' + vencimento.getFullYear();
 }
 
 function calcula_linha(barra) {
@@ -172,541 +183,541 @@ function modulo11_banco(numero) {
   return digito;
 }
 
-var bancos = [
+var json_bancos = [
   {
     "codigo": "0",
     "nome_banco": "Banco Bankpar S.A."
   },
   {
-    "codigo": 1,
+    "codigo": "1",
     "nome_banco": "Banco do Brasil S.A."
   },
   {
-    "codigo": 3,
+    "codigo": "3",
     "nome_banco": "Banco da Amazônia S.A."
   },
   {
-    "codigo": 4,
+    "codigo": "4",
     "nome_banco": "Banco do Nordeste do Brasil S.A."
   },
   {
-    "codigo": 12,
+    "codigo": "12",
     "nome_banco": "Banco Standard de Investimentos S.A."
   },
   {
-    "codigo": 14,
+    "codigo": "14",
     "nome_banco": "Natixis Brasil S.A. Banco Múltiplo"
   },
   {
-    "codigo": 19,
+    "codigo": "19",
     "nome_banco": "Banco Azteca do Brasil S.A."
   },
   {
-    "codigo": 21,
+    "codigo": "21",
     "nome_banco": "BANESTES S.A. Banco do Estado do Espírito Santo"
   },
   {
-    "codigo": 24,
+    "codigo": "24",
     "nome_banco": "Banco de Pernambuco S.A. - BANDEPE"
   },
   {
-    "codigo": 25,
+    "codigo": "25",
     "nome_banco": "Banco Alfa S.A."
   },
   {
-    "codigo": 29,
+    "codigo": "29",
     "nome_banco": "Banco Banerj S.A."
   },
   {
-    "codigo": 31,
+    "codigo": "31",
     "nome_banco": "Banco Beg S.A."
   },
   {
-    "codigo": 33,
+    "codigo": "33",
     "nome_banco": "Banco Santander (Brasil) S.A."
   },
   {
-    "codigo": 36,
+    "codigo": "36",
     "nome_banco": "Banco Bradesco BBI S.A."
   },
   {
-    "codigo": 37,
+    "codigo": "37",
     "nome_banco": "Banco do Estado do Pará S.A."
   },
   {
-    "codigo": 39,
+    "codigo": "39",
     "nome_banco": "Banco do Estado do Piauí S.A. - BEP"
   },
   {
-    "codigo": 40,
+    "codigo": "40",
     "nome_banco": "Banco Cargill S.A."
   },
   {
-    "codigo": 41,
+    "codigo": "41",
     "nome_banco": "Banco do Estado do Rio Grande do Sul S.A."
   },
   {
-    "codigo": 44,
+    "codigo": "44",
     "nome_banco": "Banco BVA S.A."
   },
   {
-    "codigo": 45,
+    "codigo": "45",
     "nome_banco": "Banco Opportunity S.A."
   },
   {
-    "codigo": 47,
+    "codigo": "47",
     "nome_banco": "Banco do Estado de Sergipe S.A."
   },
   {
-    "codigo": 62,
+    "codigo": "62",
     "nome_banco": "Hipercard Banco Múltiplo S.A."
   },
   {
-    "codigo": 63,
+    "codigo": "63",
     "nome_banco": "Banco Ibi S.A. Banco Múltiplo"
   },
   {
-    "codigo": 64,
+    "codigo": "64",
     "nome_banco": "Goldman Sachs do Brasil Banco Múltiplo S.A."
   },
   {
-    "codigo": 65,
+    "codigo": "65",
     "nome_banco": "Banco Bracce S.A."
   },
   {
-    "codigo": 66,
+    "codigo": "66",
     "nome_banco": "Banco Morgan Stanley S.A."
   },
   {
-    "codigo": 69,
+    "codigo": "69",
     "nome_banco": "BPN Brasil Banco Múltiplo S.A."
   },
   {
-    "codigo": 70,
+    "codigo": "70",
     "nome_banco": "BRB - Banco de Brasília S.A."
   },
   {
-    "codigo": 72,
+    "codigo": "72",
     "nome_banco": "Banco Rural Mais S.A."
   },
   {
-    "codigo": 73,
+    "codigo": "73",
     "nome_banco": "BB Banco Popular do Brasil S.A."
   },
   {
-    "codigo": 74,
+    "codigo": "74",
     "nome_banco": "Banco J. Safra S.A."
   },
   {
-    "codigo": 75,
+    "codigo": "75",
     "nome_banco": "Banco CR2 S.A."
   },
   {
-    "codigo": 76,
+    "codigo": "76",
     "nome_banco": "Banco KDB S.A."
   },
   {
-    "codigo": 78,
+    "codigo": "78",
     "nome_banco": "BES Investimento do Brasil S.A.-Banco de Investimento"
   },
   {
-    "codigo": 79,
+    "codigo": "79",
     "nome_banco": "JBS Banco S.A."
   },
   {
-    "codigo": 84,
+    "codigo": "84",
     "nome_banco": "Unicred Norte do Paraná"
   },
   {
-    "codigo": 96,
+    "codigo": "96",
     "nome_banco": "Banco BM&F de Serviços de Liquidação e Custódia S.A"
   },
   {
-    "codigo": 104,
+    "codigo": "104",
     "nome_banco": "Caixa Econômica Federal"
   },
   {
-    "codigo": 107,
+    "codigo": "107",
     "nome_banco": "Banco BBM S.A."
   },
   {
-    "codigo": 168,
+    "codigo": "168",
     "nome_banco": "HSBC Finance (Brasil) S.A. - Banco Múltiplo"
   },
   {
-    "codigo": 184,
+    "codigo": "184",
     "nome_banco": "Banco Itaú BBA S.A."
   },
   {
-    "codigo": 204,
+    "codigo": "204",
     "nome_banco": "Banco Bradesco Cartões S.A."
   },
   {
-    "codigo": 208,
+    "codigo": "208",
     "nome_banco": "Banco BTG Pactual S.A."
   },
   {
-    "codigo": 212,
+    "codigo": "212",
     "nome_banco": "Banco Matone S.A."
   },
   {
-    "codigo": 213,
+    "codigo": "213",
     "nome_banco": "Banco Arbi S.A."
   },
   {
-    "codigo": 214,
+    "codigo": "214",
     "nome_banco": "Banco Dibens S.A."
   },
   {
-    "codigo": 215,
+    "codigo": "215",
     "nome_banco": "Banco Comercial e de Investimento Sudameris S.A."
   },
   {
-    "codigo": 217,
+    "codigo": "217",
     "nome_banco": "Banco John Deere S.A."
   },
   {
-    "codigo": 218,
+    "codigo": "218",
     "nome_banco": "Banco Bonsucesso S.A."
   },
   {
-    "codigo": 222,
+    "codigo": "222",
     "nome_banco": "Banco Credit Agricole Brasil S.A."
   },
   {
-    "codigo": 224,
+    "codigo": "224",
     "nome_banco": "Banco Fibra S.A."
   },
   {
-    "codigo": 225,
+    "codigo": "225",
     "nome_banco": "Banco Brascan S.A."
   },
   {
-    "codigo": 229,
+    "codigo": "229",
     "nome_banco": "Banco Cruzeiro do Sul S.A."
   },
   {
-    "codigo": 230,
+    "codigo": "230",
     "nome_banco": "Unicard Banco Múltiplo S.A."
   },
   {
-    "codigo": 233,
+    "codigo": "233",
     "nome_banco": "Banco GE Capital S.A."
   },
   {
-    "codigo": 237,
+    "codigo": "237",
     "nome_banco": "Banco Bradesco S.A."
   },
   {
-    "codigo": 241,
+    "codigo": "241",
     "nome_banco": "Banco Clássico S.A."
   },
   {
-    "codigo": 243,
+    "codigo": "243",
     "nome_banco": "Banco Máxima S.A."
   },
   {
-    "codigo": 246,
+    "codigo": "246",
     "nome_banco": "Banco ABC Brasil S.A."
   },
   {
-    "codigo": 248,
+    "codigo": "248",
     "nome_banco": "Banco Boavista Interatlântico S.A."
   },
   {
-    "codigo": 249,
+    "codigo": "249",
     "nome_banco": "Banco Investcred Unibanco S.A."
   },
   {
-    "codigo": 250,
+    "codigo": "250",
     "nome_banco": "Banco Schahin S.A."
   },
   {
-    "codigo": 254,
+    "codigo": "254",
     "nome_banco": "Paraná Banco S.A."
   },
   {
-    "codigo": 263,
+    "codigo": "263",
     "nome_banco": "Banco Cacique S.A."
   },
   {
-    "codigo": 265,
+    "codigo": "265",
     "nome_banco": "Banco Fator S.A."
   },
   {
-    "codigo": 266,
+    "codigo": "266",
     "nome_banco": "Banco Cédula S.A."
   },
   {
-    "codigo": 300,
+    "codigo": "300",
     "nome_banco": "Banco de La Nacion Argentina"
   },
   {
-    "codigo": 318,
+    "codigo": "318",
     "nome_banco": "Banco BMG S.A."
   },
   {
-    "codigo": 320,
+    "codigo": "320",
     "nome_banco": "Banco Industrial e Comercial S.A."
   },
   {
-    "codigo": 341,
+    "codigo": "341",
     "nome_banco": "Itaú Unibanco S.A."
   },
   {
-    "codigo": 356,
+    "codigo": "356",
     "nome_banco": "Banco Real S.A."
   },
   {
-    "codigo": 366,
+    "codigo": "366",
     "nome_banco": "Banco Société Générale Brasil S.A."
   },
   {
-    "codigo": 370,
+    "codigo": "370",
     "nome_banco": "Banco WestLB do Brasil S.A."
   },
   {
-    "codigo": 376,
+    "codigo": "376",
     "nome_banco": "Banco J. P. Morgan S.A."
   },
   {
-    "codigo": 389,
+    "codigo": "389",
     "nome_banco": "Banco Mercantil do Brasil S.A."
   },
   {
-    "codigo": 394,
+    "codigo": "394",
     "nome_banco": "Banco Bradesco Financiamentos S.A."
   },
   {
-    "codigo": 399,
+    "codigo": "399",
     "nome_banco": "HSBC Bank Brasil S.A. - Banco Múltiplo"
   },
   {
-    "codigo": 409,
+    "codigo": "409",
     "nome_banco": "UNIBANCO - União de Bancos Brasileiros S.A."
   },
   {
-    "codigo": 412,
+    "codigo": "412",
     "nome_banco": "Banco Capital S.A."
   },
   {
-    "codigo": 422,
+    "codigo": "422",
     "nome_banco": "Banco Safra S.A."
   },
   {
-    "codigo": 453,
+    "codigo": "453",
     "nome_banco": "Banco Rural S.A."
   },
   {
-    "codigo": 456,
+    "codigo": "456",
     "nome_banco": "Banco de Tokyo-Mitsubishi UFJ Brasil S.A."
   },
   {
-    "codigo": 464,
+    "codigo": "464",
     "nome_banco": "Banco Sumitomo Mitsui Brasileiro S.A."
   },
   {
-    "codigo": 473,
+    "codigo": "473",
     "nome_banco": "Banco Caixa Geral - Brasil S.A."
   },
   {
-    "codigo": 477,
+    "codigo": "477",
     "nome_banco": "Citibank N.A."
   },
   {
-    "codigo": 479,
+    "codigo": "479",
     "nome_banco": "Banco ItaúBank S.A"
   },
   {
-    "codigo": 487,
+    "codigo": "487",
     "nome_banco": "Deutsche Bank S.A. - Banco Alemão"
   },
   {
-    "codigo": 488,
+    "codigo": "488",
     "nome_banco": "JPMorgan Chase Bank"
   },
   {
-    "codigo": 492,
+    "codigo": "492",
     "nome_banco": "ING Bank N.V."
   },
   {
-    "codigo": 494,
+    "codigo": "494",
     "nome_banco": "Banco de La Republica Oriental del Uruguay"
   },
   {
-    "codigo": 495,
+    "codigo": "495",
     "nome_banco": "Banco de La Provincia de Buenos Aires"
   },
   {
-    "codigo": 505,
+    "codigo": "505",
     "nome_banco": "Banco Credit Suisse (Brasil) S.A."
   },
   {
-    "codigo": 600,
+    "codigo": "600",
     "nome_banco": "Banco Luso Brasileiro S.A."
   },
   {
-    "codigo": 604,
+    "codigo": "604",
     "nome_banco": "Banco Industrial do Brasil S.A."
   },
   {
-    "codigo": 610,
+    "codigo": "610",
     "nome_banco": "Banco VR S.A."
   },
   {
-    "codigo": 611,
+    "codigo": "611",
     "nome_banco": "Banco Paulista S.A."
   },
   {
-    "codigo": 612,
+    "codigo": "612",
     "nome_banco": "Banco Guanabara S.A."
   },
   {
-    "codigo": 613,
+    "codigo": "613",
     "nome_banco": "Banco Pecúnia S.A."
   },
   {
-    "codigo": 623,
+    "codigo": "623",
     "nome_banco": "Banco Panamericano S.A."
   },
   {
-    "codigo": 626,
+    "codigo": "626",
     "nome_banco": "Banco Ficsa S.A."
   },
   {
-    "codigo": 630,
+    "codigo": "630",
     "nome_banco": "Banco Intercap S.A."
   },
   {
-    "codigo": 633,
+    "codigo": "633",
     "nome_banco": "Banco Rendimento S.A."
   },
   {
-    "codigo": 634,
+    "codigo": "634",
     "nome_banco": "Banco Triângulo S.A."
   },
   {
-    "codigo": 637,
+    "codigo": "637",
     "nome_banco": "Banco Sofisa S.A."
   },
   {
-    "codigo": 638,
+    "codigo": "638",
     "nome_banco": "Banco Prosper S.A."
   },
   {
-    "codigo": 641,
+    "codigo": "641",
     "nome_banco": "Banco Alvorada S.A."
   },
   {
-    "codigo": 643,
+    "codigo": "643",
     "nome_banco": "Banco Pine S.A."
   },
   {
-    "codigo": 652,
+    "codigo": "652",
     "nome_banco": "Itaú Unibanco Holding S.A."
   },
   {
-    "codigo": 653,
+    "codigo": "653",
     "nome_banco": "Banco Indusval S.A."
   },
   {
-    "codigo": 654,
+    "codigo": "654",
     "nome_banco": "Banco A.J.Renner S.A."
   },
   {
-    "codigo": 655,
+    "codigo": "655",
     "nome_banco": "Banco Votorantim S.A."
   },
   {
-    "codigo": 707,
+    "codigo": "707",
     "nome_banco": "Banco Daycoval S.A."
   },
   {
-    "codigo": 719,
+    "codigo": "719",
     "nome_banco": "Banif-Banco Internacional do Funchal (Brasil)S.A."
   },
   {
-    "codigo": 721,
+    "codigo": "721",
     "nome_banco": "Banco Credibel S.A."
   },
   {
-    "codigo": 724,
+    "codigo": "724",
     "nome_banco": "Banco Porto Seguro S.A."
   },
   {
-    "codigo": 734,
+    "codigo": "734",
     "nome_banco": "Banco Gerdau S.A."
   },
   {
-    "codigo": 735,
+    "codigo": "735",
     "nome_banco": "Banco Pottencial S.A."
   },
   {
-    "codigo": 738,
+    "codigo": "738",
     "nome_banco": "Banco Morada S.A."
   },
   {
-    "codigo": 739,
+    "codigo": "739",
     "nome_banco": "Banco BGN S.A."
   },
   {
-    "codigo": 740,
+    "codigo": "740",
     "nome_banco": "Banco Barclays S.A."
   },
   {
-    "codigo": 741,
+    "codigo": "741",
     "nome_banco": "Banco Ribeirão Preto S.A."
   },
   {
-    "codigo": 743,
+    "codigo": "743",
     "nome_banco": "Banco Semear S.A."
   },
   {
-    "codigo": 744,
+    "codigo": "744",
     "nome_banco": "BankBoston N.A."
   },
   {
-    "codigo": 745,
+    "codigo": "745",
     "nome_banco": "Banco Citibank S.A."
   },
   {
-    "codigo": 746,
+    "codigo": "746",
     "nome_banco": "Banco Modal S.A."
   },
   {
-    "codigo": 747,
+    "codigo": "747",
     "nome_banco": "Banco Rabobank International Brasil S.A."
   },
   {
-    "codigo": 748,
+    "codigo": "748",
     "nome_banco": "Banco Cooperativo Sicredi S.A."
   },
   {
-    "codigo": 749,
+    "codigo": "749",
     "nome_banco": "Banco Simples S.A."
   },
   {
-    "codigo": 751,
+    "codigo": "751",
     "nome_banco": "Dresdner Bank Brasil S.A. - Banco Múltiplo"
   },
   {
-    "codigo": 752,
+    "codigo": "752",
     "nome_banco": "Banco BNP Paribas Brasil S.A."
   },
   {
-    "codigo": 753,
+    "codigo": "753",
     "nome_banco": "NBC Bank Brasil S.A. - Banco Múltiplo"
   },
   {
-    "codigo": 755,
+    "codigo": "755",
     "nome_banco": "Bank of America Merrill Lynch Banco Múltiplo S.A."
   },
   {
-    "codigo": 756,
+    "codigo": "756",
     "nome_banco": "Banco Cooperativo do Brasil S.A. - BANCOOB"
   },
   {
-    "codigo": 757,
+    "codigo": "757",
     "nome_banco": "Banco KEB do Brasil S.A."
   },
   {
@@ -727,6 +738,10 @@ var bancos = [
   },
   {
     "codigo": "085-x",
+    "nome_banco": "Cooperativa Central de Crédito Urbano-CECRED"
+  },
+  {
+    "codigo": "085",
     "nome_banco": "Cooperativa Central de Crédito Urbano-CECRED"
   },
   {
