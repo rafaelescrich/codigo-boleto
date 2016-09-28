@@ -1,4 +1,4 @@
-// 0859468160000028251010611002155540000341701 - lido pelo leitor
+// 08594681600000282510106110021555400003451701 - lido pelo leitor
 // 08590106131002155540300034517011468160000028251  - linha digitavel
 function verificaBoleto() {
 
@@ -6,10 +6,17 @@ function verificaBoleto() {
 
   linha_digitavel = linha_digitavel.replace(/[\. ,:-]+/g, "");
 
-  if(linha_digitavel.length !== 47)  {
-    alert("Número do boleto menor que 47 dígitos");
-    return;
+  if(linha_digitavel.length !== 47) {
+    if(linha_digitavel.length === 44) {
+      linha_digitavel = calcula_linha(linha_digitavel);
+    } else {
+      alert("Número do boleto menor que 47 dígitos");
+      return;
+    }
   }
+
+  linha_digitavel = linha_digitavel.replace(/[\. ,:-]+/g, "");
+  document.getElementById('inputBoletoVerificado').innerHTML = linha_digitavel;
 
   // Posição 01-03 = identificação do banco (001 = Banco do Brasil)
   var codigo_banco = linha_digitavel.substr(0, 3);
@@ -60,35 +67,40 @@ function verificaBoleto() {
 }
 
 function calcula_barra(linha) {
-  
-  if (barra.length < 47 ) barra = barra + '00000000000'.substr(0,47 - barra.length);
-  if (barra.length != 47) alert ('A linha do código de barras está incompleta!' + barra.length);
-  
-  barra  = barra.substr(0,4) + barra.substr(32,15) + barra.substr(4,5) + barra.substr(10,10) + barra.substr(21,10);
-  
-  if (modulo11(barra.substr(0,4) + barra.substr(5,39)) != barra.substr(4,1))
-    alert('Digito verificador '+ barra.substr(4,1) + ', o correto é ' + modulo11_banco(barra.substr(0,4) + barra.substr(5,39)) + '\nO sistema não altera automaticamente o dígito correto na quinta casa!');
 
-  return(barra);
+  if (linha.length < 47 )
+    linha = linha + '00000000000'.substr(0,47 - linha.length);
+  if (linha.length != 47)
+    alert ('A linha do código de barras está incompleta!' + linha.length);
+  
+  linha  = linha.substr(0,4) + linha.substr(32,15) + linha.substr(4,5) 
+            + linha.substr(10,10) + linha.substr(21,10);
+  
+  if (modulo11(linha.substr(0,4) + linha.substr(5,39)) != linha.substr(4,1))
+    alert('Digito verificador '+ linha.substr(4,1) + ', o correto é '
+           + modulo11_banco(linha.substr(0,4) + linha.substr(5,39)) + '\nO sistema não altera automaticamente o dígito correto na quinta casa!');
+
+  return linha;
 }
 
 function calcula_linha(barra) {
 
-  var campo1 = linha.substr(0,4) + linha.substr(19,1) + '.' + linha.substr(20,4);
-  var campo2 = linha.substr(24,5) + '.' + linha.substr(24 + 5,5);
-  var campo3 = linha.substr(34,5) + '.' + linha.substr(34 + 5,5);
-  var campo4 = linha.substr(4,1);   // Digito verificador
-  var campo5 = linha.substr(5,14);  // Vencimento + Valor
+  var campo1 = barra.substr(0,4) + barra.substr(19,1) + '.' + barra.substr(20,4);
+  var campo2 = barra.substr(24,5) + '.' + barra.substr(24 + 5,5);
+  var campo3 = barra.substr(34,5) + '.' + barra.substr(34 + 5,5);
+  var campo4 = barra.substr(4,1);   // Digito verificador
+  var campo5 = barra.substr(5,14);  // Vencimento + Valor
   
-  if (modulo11(linha.substr(0,4) + linha.substr(5,99)) != campo4)
-    alert('Digito verificador ' + campo4 + ', o correto é ' + modulo11(linha.substr(0,4)+linha.substr(5,99)) + '\nO sistema não altera automaticamente o dígito correto na quinta casa!');
+  if (modulo11(barra.substr(0,4) + barra.substr(5,99)) != campo4)
+    alert('Digito verificador ' + campo4 + ', o correto é ' + modulo11(barra.substr(0,4)
+          +linha.substr(5,99)) + '\nO sistema não altera automaticamente o dígito correto na quinta casa!');
   
   if (campo5 == 0) campo5 = '000';
   
-  linha =  campo1 + modulo10(campo1) + ' ' + campo2 + modulo10(campo2) + ' ' + campo3 + modulo10(campo3) + ' ' + campo4 
-           + ' ' + campo5;
+  barra =  campo1 + modulo10(campo1) + ' ' + campo2 + modulo10(campo2) + ' ' + campo3
+           + modulo10(campo3) + ' ' + campo4 + ' ' + campo5;
 
-  return(linha);
+  return barra;
 }
 
 function identifica_banco(codigo_banco, json_bancos) {
@@ -114,9 +126,9 @@ function identifica_moeda(num_moeda) {
 function identifica_data_vencimento(fator_vencimento) {
 
   // var data_base = new Date('09/07/1997');
-  var data_base = new Date();
-  data_base.setFullYear(1997,9,7);
-  // var data_base = new Date("October 07, 1997 00:00:00");
+  // var data_base = new Date();
+  // data_base.setFullYear(1997,9,7);
+  var data_base = new Date("October 07, 1997 15:00:00");
   data_base = data_base.getTime();
   var vencimento = new Date();
   // duedate.setTime(duedate.getTime() + (1000 * 60 * 60 * 24 * dayscount));
@@ -136,6 +148,7 @@ function identifica_valor(valor) {
 
 function modulo10(numero) {
 
+  numero = numero.replace(/[^0-9]/g,'');
   var soma  = 0;
   var peso  = 2;
   var contador = numero.length-1;
@@ -158,6 +171,7 @@ function modulo10(numero) {
 
 function modulo11(numero) {
 
+  numero = numero.replace(/[^0-9]/g,'');
   var soma  = 0;
   var peso  = 2;
   var base  = 9;
