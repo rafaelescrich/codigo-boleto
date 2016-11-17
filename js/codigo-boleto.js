@@ -125,13 +125,9 @@ function identifica_moeda(num_moeda) {
 
 function identifica_data_vencimento(fator_vencimento) {
 
-  // var data_base = new Date('09/07/1997');
-  // var data_base = new Date();
-  // data_base.setFullYear(1997,9,7);
   var data_base = new Date("October 07, 1997 15:00:00");
   data_base = data_base.getTime();
   var vencimento = new Date();
-  // duedate.setTime(duedate.getTime() + (1000 * 60 * 60 * 24 * dayscount));
   vencimento.setTime(data_base + (fator_vencimento * 24 * 60 * 60 * 1000));
   var data_vencimento = vencimento.getDate();
   var mes_vencimento = vencimento.getMonth();
